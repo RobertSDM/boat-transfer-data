@@ -1,6 +1,8 @@
 package mai_ocean.robot_data_transfer.rest;
 
 import mai_ocean.robot_data_transfer.model.Robot;
+import mai_ocean.robot_data_transfer.model.dto.RobotDTO;
+import mai_ocean.robot_data_transfer.model.dto.mapper.RobotDTOMapper;
 import mai_ocean.robot_data_transfer.repository.RobotRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,16 +10,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestMapping("/robot")
 @RestController
 public class RobotRest {
     @Autowired
     private RobotRep robotRep;
+    private final RobotDTOMapper RobotDTOMapper;
+
+    public RobotRest(RobotDTOMapper RobotDTOMapper) {
+        this.RobotDTOMapper = RobotDTOMapper;
+    }
 
     @GetMapping(value = "/find/all")
-    private ResponseEntity<List<Robot>> findAll(){
-        List<Robot> robots = robotRep.findAll();
+    private ResponseEntity<List<RobotDTO>> findAll(){
+        List<RobotDTO> robots = robotRep.findAll()
+                .stream().map(RobotDTOMapper).collect(Collectors.toList());
         if(robots.isEmpty()){
             return ResponseEntity.noContent().build();
         }
@@ -25,17 +34,18 @@ public class RobotRest {
     }
 
     @GetMapping(value = "/find/{id}")
-    private ResponseEntity<Robot> findById(@PathVariable String id){
-        Optional<Robot> robot = robotRep.findById(id);
-        if(robot.isPresent()){
-            return ResponseEntity.ok(robot.get());
+    private ResponseEntity<RobotDTO> findById(@PathVariable String id){
+        Optional<Robot> OptRobot = robotRep.findById(id);
+        if(OptRobot.isPresent()){
+            RobotDTO robot = RobotDTOMapper.apply(OptRobot.get());
+            return ResponseEntity.ok(robot);
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = "/find/model/{model}")
-    private ResponseEntity<List<Robot>> findByModel(@PathVariable String model){
-        List<Robot> robots = robotRep.findByModel(model);
+    private ResponseEntity<List<RobotDTO>> findByModel(@PathVariable String model){
+        List<RobotDTO> robots = robotRep.findByModel(model);
         if(robots.isEmpty()){
             return ResponseEntity.noContent().build();
         }
@@ -43,11 +53,11 @@ public class RobotRest {
     }
 
     @GetMapping(value = "/find/location")
-    private ResponseEntity<List<Robot>> findByLocation(@RequestParam Double latitudeStart,
-                                                       @RequestParam Double latitudeEnd,
-                                                       @RequestParam Double longitudeStart,
-                                                       @RequestParam Double longitudeEnd){
-        List<Robot> robots = robotRep.findByLatitudeBetweenAndLongitudeBetween(latitudeStart,
+    private ResponseEntity<List<RobotDTO>> findByLocation(@RequestParam Double latitudeStart,
+                                                          @RequestParam Double latitudeEnd,
+                                                          @RequestParam Double longitudeStart,
+                                                          @RequestParam Double longitudeEnd){
+        List<RobotDTO> robots = robotRep.findByLatitudeBetweenAndLongitudeBetween(latitudeStart,
                 latitudeEnd, longitudeStart, longitudeEnd);
         if(robots.isEmpty()){
             return ResponseEntity.noContent().build();

@@ -27,11 +27,11 @@ public class Robot {
 
     @Column(name = "ds_longitude")
     @NotBlank(message = "The ds_longitude column can't be null or empty")
-    private double longitude;
+    private Double longitude;
 
     @Column(name = "ds_latitude")
     @NotBlank(message = "The ds_latitude column can't be null or empty")
-    private double latitude;
+    private Double latitude;
 
     @Column(name = "ds_model")
     @NotBlank(message = "The ds_model column can't be null or empty")
