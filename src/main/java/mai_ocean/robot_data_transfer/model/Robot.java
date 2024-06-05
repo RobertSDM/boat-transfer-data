@@ -1,5 +1,6 @@
 package mai_ocean.robot_data_transfer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,12 @@ public class Robot {
     private List<Image> images;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_temperature")
+    @JoinTable(
+            name = "id_temperature",
+            joinColumns = @JoinColumn(name = "id_temperature"),
+            inverseJoinColumns = @JoinColumn(name = "id_robot")
+    )
+    @JsonIgnoreProperties("robots")
     private List<Temperature> temperatures;
 
     @OneToMany(cascade = CascadeType.PERSIST)

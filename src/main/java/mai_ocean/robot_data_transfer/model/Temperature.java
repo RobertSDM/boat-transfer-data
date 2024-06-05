@@ -1,11 +1,13 @@
 package mai_ocean.robot_data_transfer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_maiocen_temperature")
@@ -31,6 +33,10 @@ public class Temperature {
     @Column(name = "ds_latitude")
     @NotBlank(message = "The ds_latitude column can't be null or empty")
     private double latitude;
+
+    @ManyToMany(mappedBy = "temperatures")
+    @JsonIgnoreProperties("temperatures")
+    private List<Robot> robots;
 
     public Temperature(LocalDateTime time, Integer depth, Integer temperature) {
         this.time = LocalDateTime.now();
