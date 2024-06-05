@@ -73,7 +73,7 @@ public class ImageRest {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<Image> delete(@PathVariable String id){
+    public ResponseEntity<?> delete(@PathVariable String id){
         try{
             imageRep.deleteById(id);
             return ResponseEntity.ok().build();

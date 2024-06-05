@@ -76,4 +76,14 @@ public class TemperatureRest {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        try{
+            tempRep.deleteById(id);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
