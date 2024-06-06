@@ -13,6 +13,7 @@ public class ImageDTOMapper implements Function<Image, ImageDTO> {
     public ImageDTO apply(Image image) {
         return new ImageDTO(
                 image.getTime(),
+                image.getDate(),
                 image.getDepth(),
                 image.getLatitude(),
                 image.getLongitude()

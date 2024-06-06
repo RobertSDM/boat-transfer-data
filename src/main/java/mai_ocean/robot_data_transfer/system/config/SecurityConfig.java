@@ -18,7 +18,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "v3/api-docs/**", "/image/**", "/temp/**", "/robot/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/image/**", "/temp/**").permitAll())
+                        .requestMatchers(HttpMethod.POST, "/image/**", "/temp/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "image/**", "/temp/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "image/**", "/temp/**").permitAll())
                 .build();
     }
 }

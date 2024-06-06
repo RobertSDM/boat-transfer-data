@@ -52,4 +52,5 @@ public class DailyReportRest {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 }

@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "tb_maiocean_image")
@@ -20,8 +22,11 @@ public class Image {
     @Column(name = "id_image")
     private String id;
 
-    @Column(name = "dt_time")
-    private LocalDateTime time;
+    @Column(name = "dt_date")
+    private LocalDate date;
+
+    @Column(name = "hr_time")
+    private LocalTime time;
 
     @Column(name = "ds_depth")
     @NotNull(message = "The ds_depth column can't be null")
