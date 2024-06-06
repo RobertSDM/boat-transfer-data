@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tb_maiocen_image_data")
+@Table(name = "tb_maiocean_image_content")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +19,5 @@ public class ImageContent {
 
     @Column(name = "ds_content")
     @NotNull(message = "the ds_content column can't be null")
-    @Lob
-    private Byte[] content;
+    private String content;
 }

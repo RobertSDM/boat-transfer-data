@@ -41,21 +41,15 @@ public class Robot {
     @NotBlank(message = "The ds_model column can't be null or empty")
     private Integer bateryCapacity;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_image")
+    @OneToMany(mappedBy = "robot")
     private List<Image> images;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "id_temperature",
-            joinColumns = @JoinColumn(name = "id_temperature"),
-            inverseJoinColumns = @JoinColumn(name = "id_robot")
-    )
-    @JsonIgnoreProperties("robots")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_robot_fk", nullable = false)
     private List<Temperature> temperatures;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_daily_report")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_robot_fk", nullable = false)
     private List<DailyReport> dailyReports;
 
 }

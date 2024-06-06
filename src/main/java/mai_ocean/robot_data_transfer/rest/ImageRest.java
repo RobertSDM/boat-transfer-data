@@ -6,10 +6,12 @@ import mai_ocean.robot_data_transfer.model.dto.ImageDTO;
 import mai_ocean.robot_data_transfer.model.dto.mapper.ImageDTOMapper;
 import mai_ocean.robot_data_transfer.repository.ImageRep;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +34,19 @@ public class ImageRest {
         if(images.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(images.stream().map(imageDTOMapper).collect(Collectors.toList()));
+        List<ImageDTO> imagesdto = images.stream().map(img -> {
+            ImageDTO imgDTO = new ImageDTO(img.getTime(), img.getDepth(), img.getLatitude(), img.getLongitude());
+
+            imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).findById(img.getId())).withRel("Find image by id"));
+            imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).findTime(img.getTime().toLocalDate(), img.getTime().toLocalDate())).withRel("Find all images between a date"));
+            imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).create(null)).withRel("Create a image"));
+            imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).update(null, null)).withRel("Update a image"));
+            imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).delete(null)).withRel("Delete a image"));
+
+            return imgDTO;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(imagesdto);
     }
 
     @GetMapping(value = "/find/{id}")
@@ -56,6 +70,7 @@ public class ImageRest {
     @PostMapping(value = "/create")
     public ResponseEntity<Image> create(@Valid @RequestBody Image image){
         try{
+            image.setTime(LocalDateTime.now());
             imageRep.save(image);
             return ResponseEntity.ok(image);
         }catch (Exception e){

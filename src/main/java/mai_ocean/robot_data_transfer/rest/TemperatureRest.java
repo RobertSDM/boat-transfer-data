@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,7 @@ public class TemperatureRest {
     @PostMapping(value = "/create")
     public ResponseEntity<Temperature> create(@RequestBody Temperature temp) {
         try{
+            temp.setTime(LocalDateTime.now());
             tempRep.save(temp);
             return ResponseEntity.ok(temp);
         }catch (Exception e){

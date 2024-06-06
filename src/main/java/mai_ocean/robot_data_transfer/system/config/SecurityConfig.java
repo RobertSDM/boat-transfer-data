@@ -17,7 +17,8 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "v3/api-docs/**", "/image/**", "/temp/**", "/robot/**").permitAll())
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "v3/api-docs/**", "/image/**", "/temp/**", "/robot/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/image/**", "/temp/**").permitAll())
                 .build();
     }
 }
