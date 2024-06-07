@@ -45,7 +45,7 @@ public class Temperature {
     private double latitude;
 
     @ManyToOne
-    @JoinColumn(name = "id_robot_fk")
+    @JoinColumn(name = "id_temp_fk")
     @JsonIgnoreProperties(value = {"temperatures"})
     private Robot robot;
 

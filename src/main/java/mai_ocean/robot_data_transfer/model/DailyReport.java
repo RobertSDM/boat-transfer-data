@@ -1,8 +1,9 @@
 package mai_ocean.robot_data_transfer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mai_ocean.robot_data_transfer.repository.TemperatureRep;
@@ -23,11 +24,10 @@ public class DailyReport {
     private String id;
 
     @Column(name = "ds_batery_capacity")
-    @NotBlank(message = "The ds_batery_capacity column can't be null or empty")
+    @NotNull(message = "The ds_batery_capacity column can't be null")
     private Integer bateryCapacity;
 
     @Column(name = "dt_day")
-    @NotBlank(message = "The dt_day column can't be null or empty")
     private LocalDate dtDay;
 
     @Column(name = "ds_status")
@@ -35,33 +35,28 @@ public class DailyReport {
     private String status;
 
     @Column(name = "ds_latitude")
-    @NotBlank(message = "The ds_latitude column can't be null or empty")
+    @NotNull(message = "The ds_latitude column can't be null")
     private Double latitude;
 
     @Column(name = "ds_longitude")
-    @NotBlank(message = "The ds_longitude column can't be null or empty")
+    @NotNull(message = "The ds_longitude column can't be null")
     private Double longitude;
 
     @Column(name = "ds_avg_temp")
-    @NotBlank(message = "The ds_avg_temp column can't be null or empty")
     private Integer avgTemp;
 
-    public DailyReport(Double longitude, Double latitude, String status, LocalDate dtDay, Integer bateryCapacity, TemperatureRep tempRep) {
-        this.avgTemp = getDailyAvarageTemp(tempRep, dtDay);
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.status = status;
-        this.dtDay = dtDay;
-        this.bateryCapacity = bateryCapacity;
-    }
+    @ManyToOne
+    @JoinColumn(name = "id_dailyReport_fk")
+    @JsonIgnoreProperties(value = {"dailyReports"})
+    private Robot robot;
 
-    private Integer getDailyAvarageTemp(TemperatureRep tempRep, LocalDate date){
-        List<Temperature> temperatures = tempRep.findAllByTimeBetweenOnlyDate(LocalDateTime.of(date, LocalTime.of(0, 0, 0)), LocalDateTime.of(date, LocalTime.of(23, 59, 59)));
+    public Integer getDailyAvarageTemp(TemperatureRep tempRep, LocalDate date){
+        List<Temperature> temperatures = tempRep.findAllByDateBetween(date, date);
         Integer total = 0;
         for (Temperature temperature : temperatures) {
             total += temperature.getTemperature();
         }
-        return temperatures.size() / total;
+        return total > 0 ? total / temperatures.size() : 0;
     }
 
 }

@@ -47,7 +47,7 @@ public class Image {
     private ImageContent imageContent;
 
     @ManyToOne
-    @JoinColumn(name = "id_robot_fk")
+    @JoinColumn(name = "id_image_fk")
     @JsonIgnoreProperties(value = {"images"})
     private Robot robot;
 

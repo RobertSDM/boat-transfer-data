@@ -48,7 +48,7 @@ public class TemperatureRest {
     }
 
     @GetMapping(value = "/find/location")
-    private ResponseEntity<List<Temperature>> findByLocation(@RequestParam Double latitudeStart,
+    public ResponseEntity<List<Temperature>> findByLocation(@RequestParam Double latitudeStart,
                                                        @RequestParam Double latitudeEnd,
                                                        @RequestParam Double longitudeStart,
                                                        @RequestParam Double longitudeEnd){
