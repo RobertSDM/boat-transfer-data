@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import mai_ocean.robot_data_transfer.repository.TemperatureRep;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -56,7 +54,7 @@ public class DailyReport {
         for (Temperature temperature : temperatures) {
             total += temperature.getTemperature();
         }
-        return total > 0 ? total / temperatures.size() : 0;
+        return total != 0 ? total / temperatures.size() : 0;
     }
 
 }
