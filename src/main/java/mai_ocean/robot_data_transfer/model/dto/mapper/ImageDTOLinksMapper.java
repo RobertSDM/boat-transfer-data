@@ -11,8 +11,10 @@ import java.util.function.Function;
 
 @Service
 public class ImageDTOLinksMapper implements Function<Image, ImageDTO> {
+
     @Override
     public ImageDTO apply(Image img) {
+
         ImageDTO imgDTO = new ImageDTO(img.getTime(),img.getDate(), img.getDepth(), img.getLatitude(), img.getLongitude());
 
         imgDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageRest.class).findAll()).withRel("Find all images"));

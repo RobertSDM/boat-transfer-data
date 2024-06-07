@@ -42,10 +42,11 @@ public class Robot {
     private Integer bateryCapacity;
 
     @OneToMany(mappedBy = "robot")
+    @JsonIgnoreProperties(value = "robot")
     private List<Image> images;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_robot_fk", nullable = false)
+    @OneToMany(mappedBy = "robot")
+    @JsonIgnoreProperties(value = "robot")
     private List<Temperature> temperatures;
 
     @OneToMany(cascade = CascadeType.ALL)

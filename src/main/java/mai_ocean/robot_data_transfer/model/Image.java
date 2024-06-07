@@ -1,5 +1,6 @@
 package mai_ocean.robot_data_transfer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,8 @@ public class Image {
     private ImageContent imageContent;
 
     @ManyToOne
-    @JoinColumn(name = "id_image_fk")
+    @JoinColumn(name = "id_robot_fk")
+    @JsonIgnoreProperties(value = {"images"})
     private Robot robot;
 
 }

@@ -4,12 +4,15 @@ import jakarta.validation.Valid;
 import mai_ocean.robot_data_transfer.model.Image;
 import mai_ocean.robot_data_transfer.model.Robot;
 import mai_ocean.robot_data_transfer.model.Temperature;
+import mai_ocean.robot_data_transfer.model.dto.TemperatureDTO;
+import mai_ocean.robot_data_transfer.model.dto.mapper.TemperatureDTOLinksMapper;
 import mai_ocean.robot_data_transfer.repository.TemperatureRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,21 +21,28 @@ import java.util.Optional;
 public class TemperatureRest {
     @Autowired
     private TemperatureRep tempRep;
+    private final TemperatureDTOLinksMapper tempDTOLinksMapper;
+
+    public TemperatureRest(TemperatureDTOLinksMapper tempDTOLinksMapper) {
+        this.tempDTOLinksMapper = tempDTOLinksMapper;
+    }
 
     @GetMapping(value = "/find/all")
-    public ResponseEntity<List<Temperature>> findAll() {
+    public ResponseEntity<List<TemperatureDTO>> findAll() {
         List<Temperature> tempList = tempRep.findAll();
         if(tempList.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(tempList);
+        List<TemperatureDTO> tempDTO = tempList.stream().map(tempDTOLinksMapper).toList();
+
+        return ResponseEntity.ok(tempDTO);
     }
 
     @GetMapping(value = "/find/{id}")
-    public ResponseEntity<Temperature> findById(@PathVariable String id) {
+    public ResponseEntity<TemperatureDTO> findById(@PathVariable String id) {
         Optional<Temperature> temp = tempRep.findById(id);
         if(temp.isPresent()){
-            return ResponseEntity.ok(temp.get());
+            return ResponseEntity.ok(tempDTOLinksMapper.apply(temp.get()));
         }
         return ResponseEntity.notFound().build();
     }
@@ -51,11 +61,12 @@ public class TemperatureRest {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Temperature> create(@RequestBody Temperature temp) {
+    public ResponseEntity<TemperatureDTO> create(@RequestBody Temperature temp) {
         try{
-            temp.setTime(LocalDateTime.now());
+            temp.setTime(LocalTime.now());
+            temp.setDate(LocalDate.now());
             tempRep.save(temp);
-            return ResponseEntity.ok(temp);
+            return ResponseEntity.ok(tempDTOLinksMapper.apply(temp));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
@@ -63,7 +74,7 @@ public class TemperatureRest {
     }
 
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<Temperature> update(@PathVariable String id, @Valid @RequestBody Temperature tempp) {
+    public ResponseEntity<TemperatureDTO> update(@PathVariable String id, @Valid @RequestBody Temperature tempp) {
         Optional<Temperature> temp = tempRep.findById(id);
         if(temp.isPresent()){
             temp.get().setDepth(tempp.getDepth());
@@ -73,7 +84,7 @@ public class TemperatureRest {
             temp.get().setDepth(tempp.getDepth());
 
             tempRep.save(temp.get());
-            return ResponseEntity.ok(temp.get());
+            return ResponseEntity.ok(tempDTOLinksMapper.apply(temp.get()));
         }else{
             return ResponseEntity.notFound().build();
         }
@@ -85,6 +96,7 @@ public class TemperatureRest {
             tempRep.deleteById(id);
             return ResponseEntity.ok().build();
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
