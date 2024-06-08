@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 @Service
 public class RobotDTOMapper implements Function<Robot, RobotDTO> {
     private final ImageDTOMapper imageDTOMapper;
+    private final TemperatureDTOLinksMapper temperatureDTOLinksMapper;
 
-    public RobotDTOMapper(ImageDTOMapper imageDTOMapper) {
+    public RobotDTOMapper(ImageDTOMapper imageDTOMapper, TemperatureDTOLinksMapper temperatureDTOLinksMapper) {
+        this.temperatureDTOLinksMapper = temperatureDTOLinksMapper;
         this.imageDTOMapper = imageDTOMapper;
     }
 
@@ -23,7 +25,7 @@ public class RobotDTOMapper implements Function<Robot, RobotDTO> {
                 robot.getLatitude(),
                 robot.getBateryCapacity(),
                 robot.getModel(),
-                robot.getImages().stream().map(imageDTOMapper).collect(Collectors.toList()),
-                robot.getTemperatures());
+                robot.getImages().stream().map(this.imageDTOMapper).collect(Collectors.toList()),
+                robot.getTemperatures().stream().map(this.temperatureDTOLinksMapper).toList());
     }
 }
